@@ -11,10 +11,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 import static org.springframework.security.config.Customizer.withDefaults;
+
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+
 import java.util.List;
 
 @Configuration
@@ -27,23 +30,24 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(withDefaults()) // <-- just this, let Spring use WebConfig
+                .cors(withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/v1/register",
+                        .requestMatchers(
+                                "/api/auth/v1/register",
                                 "/api/auth/v1/login",
                                 "/api/recruiter/jobs/public/**",
                                 "/swagger-ui.html",
                                 "/api/auth/v1/forgot-password",
                                 "/api/auth/v1/reset-password",
                                 "/swagger-ui/**",
-                                "/v3/api-docs/**")
-                        .permitAll()
+                                "/v3/api-docs/**"
+                        ).permitAll()
                         .requestMatchers(
                                 "/api/jobs/v1/post",
                                 "/api/jobs/v1/update/**",
-                                "/api/jobs/v1/delete/**"
-                                "api/profile/v1/status/{userId}"
+                                "/api/jobs/v1/delete/**",
+                                "api/profile/v1/status/{userId}"  // ✅ Comma added above
                         ).hasAuthority("Recruiter")
                         .anyRequest().authenticated()
                 )
